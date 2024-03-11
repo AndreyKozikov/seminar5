@@ -3,6 +3,9 @@ package notebook.util.mapper.impl;
 import notebook.util.mapper.Mapper;
 import notebook.model.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserMapper implements Mapper {
     @Override
     public String toInput(User user) {
@@ -18,6 +21,15 @@ public class UserMapper implements Mapper {
             return new User(id, lines[1], lines[2], lines[3]);
         }
         throw new NumberFormatException("Id must be a large number");
+    }
+
+    @Override
+    public List<String> convertToListStr(List<User> users) {
+        List<String> lines = new ArrayList<>();
+        for (User u: users) {
+            lines.add(toInput(u));
+        }
+        return lines;
     }
 
     private boolean isDigit(String s) throws NumberFormatException {

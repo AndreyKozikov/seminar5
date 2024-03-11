@@ -17,7 +17,7 @@ public class UserController {
         repository.create(user);
     }
 
-    public User readUser(Long userId) throws Exception {
+    public User readUser(Long userId) {
         List<User> users = repository.findAll();
         for (User user : users) {
             if (Objects.equals(user.getId(), userId)) {
@@ -25,7 +25,7 @@ public class UserController {
             }
         }
 
-        throw new RuntimeException("User not found");
+        throw new RuntimeException("Пользователь с идентификатором " + userId + " не найден.");
     }
 
     public List<User> readAll() {
@@ -35,5 +35,14 @@ public class UserController {
     public void updateUser(String userId, User update) {
         update.setId(Long.parseLong(userId));
         repository.update(Long.parseLong(userId), update);
+    }
+
+    public String deleteUser(Long userId){
+        if (repository.delete(userId)) {
+            return "Пользователь удален успешно";
+        } else {
+            Exception e = new Exception();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

@@ -1,5 +1,10 @@
 package notebook.model;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+
 public class User {
     private Long id;
     private String firstName;
@@ -51,6 +56,10 @@ public class User {
 
     @Override
     public String toString() {
-        return String.format("Идентафикатор: %s\nИмя: %s,\nФамилия: %s,\nТелефон: %s", id, firstName, lastName, phone);
+        return String.format("Идентификатор: %s\nИмя: %s,\nФамилия: %s,\nТелефон: %s\n", id, firstName, lastName, phone);
     }
+
 }
+
+
+

@@ -3,7 +3,7 @@ package notebook.view;
 import notebook.controller.UserController;
 import notebook.model.User;
 import notebook.util.Commands;
-import notebook.util.UserValidator;
+
 
 import java.util.Locale;
 import java.util.Scanner;
@@ -20,29 +20,50 @@ public class UserView {
 
         while (true) {
             String command = prompt("Введите команду: ").toUpperCase();
-            com = Commands.valueOf(command);
-            if (com == Commands.EXIT) return;
-            switch (com) {
-                case CREATE:
-                    User u = createUser();
-                    userController.saveUser(u);
-                    break;
-                case READ:
-                    String id = prompt("Идентификатор пользователя: ");
-                    try {
-                        User user = userController.readUser(Long.parseLong(id));
+            String userId;
+            User user;
+            try {
+                com = Commands.valueOf(command);
+                if (com == Commands.EXIT) return;
+                switch (com) {
+                    case CREATE:
+                        user = createUser(true);
+                        userController.saveUser(user);
+                        break;
+                    case READ:
+                        userId = prompt("Введите идентификатор записи: ");
+                        user = userController.readUser(Long.parseLong(userId));
                         System.out.println(user);
-                        System.out.println();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    break;
-                case READALL:
-                    System.out.println(userController.readAll());
-                    break;
-                case UPDATE:
-                    String userId = prompt("Enter user id: ");
-                    userController.updateUser(userId, createUser());
+                        break;
+                    case READALL:
+                        System.out.println(userController.readAll());
+                        break;
+                    case UPDATE:
+                        userId = prompt("Введите идентификатор записи: ");
+                        user = userController.readUser(Long.parseLong(userId));
+                        System.out.println("\n" + user);
+                        userController.updateUser(userId, createUser(false));
+                        break;
+                    case DELETE:
+                        userId = prompt("Введите идентификатор записи: ");
+                        System.out.println(userController.deleteUser(Long.parseLong(userId)));
+                        break;
+                    case LIST:
+                        System.out.println("Доступны следующие команды:\n" +
+                                        "READ - считать запись и вывести на экран\n" +
+                                "READALL - считать все записи и вывести на экран\n" +
+                                "CREATE - внести новую запись\n" +
+                                "UPDATE - изменить существующую запись\n" +
+                                "LIST - вывести список доступных команд\n" +
+                                "DELETE - удалить запись\n" +
+                                "EXIT выйти из программы");
+                        break;
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("Команда " + command + " не найдена. Для списка команд используйте LIST.");
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         }
     }
@@ -64,10 +85,10 @@ public class UserView {
         }
     }
 
-    private User createUser() {
-        String firstName = checkLine(prompt("Имя: "));
-        String lastName = checkLine(prompt("Фамилия: "));
-        String phone = checkLine(prompt("Номер телефона: "));
+    private User createUser(boolean isCheckNeed) {
+        String firstName = isCheckNeed ? checkLine(prompt("Имя: ")) : prompt("Имя: ");
+        String lastName = isCheckNeed ? checkLine(prompt("Фамилия: ")) : prompt("Фамилия: ");
+        String phone = isCheckNeed ? checkLine(prompt("Номер телефона: ")) : prompt("Номер телефона: ");
         return new User(firstName, lastName, phone);
     }
 }
